@@ -1,0 +1,46 @@
+[{
+  "_id": {
+    "$oid": "62f1016f9878012b381961b4"
+  },
+  "name": "a",
+  "lastName": "a",
+  "email": "a",
+  "phoneNumber": "a",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62f56feb4b8a8f063f25aa08"
+  },
+  "name": "Mxksym",
+  "lastName": "Andreyanov",
+  "email": "maxdurant2001@gmail.com",
+  "phoneNumber": "+380994320832",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62f570014b8a8f063f25aa0e"
+  },
+  "name": "Lipot",
+  "lastName": "Arpad",
+  "email": "lipton",
+  "phoneNumber": "+380123451234",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62f570164b8a8f063f25aa15"
+  },
+  "name": "Slava",
+  "lastName": "Pavlovich",
+  "email": "pav.slava@gmail.com",
+  "phoneNumber": "+3809467261421",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62f570394b8a8f063f25aa20"
+  },
+  "name": "testUserName",
+  "lastName": "testUserLastName",
+  "email": "testUserLastName@gmail.com",
+  "phoneNumber": "+38066234265",
+  "__v": 0
+}]
