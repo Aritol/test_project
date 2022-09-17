@@ -1,26 +1,30 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <drop-down-menu />
+    <my-input />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import DropDownMenu from "@/components/DropDownMenu";
+import MyInput from "@/components/MyInput";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    DropDownMenu,
+    MyInput,
+  },
+};
 </script>
 
 <style>
+@import "@/assets/styles/null.scss";
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  /* color: #2c3e50;
+  margin-top: 60px; */
 }
 </style>
