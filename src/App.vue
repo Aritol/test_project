@@ -1,18 +1,16 @@
 <template>
   <div>
     <drop-down-menu />
-    <my-input />
   </div>
 </template>
 
 <script>
 import DropDownMenu from "@/components/DropDownMenu";
-import MyInput from "@/components/MyInput";
+
 export default {
   name: "App",
   components: {
     DropDownMenu,
-    MyInput,
   },
 };
 </script>

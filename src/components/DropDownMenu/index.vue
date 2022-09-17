@@ -2,9 +2,16 @@
   <div>
     <div class="container">
       <div class="main_wrapper">
-        <div class="dropdown_header" @click="onDropDownClick">
+        <div
+          class="dropdown_header"
+          tabindex="0"
+          @click="onDropDownClick"
+          ref="drop"
+          @keyup.enter.prevent="goToDoc(filteredDropDownList)"
+          @keyup.up.prevent="highlightPrevious"
+          @keyup.down.prevent="highlightNext(filteredDropDownList.length)"
+        >
           <div class="title_container">
-            <!-- <p>Select menu item</p> -->
             <p>{{ title }}</p>
           </div>
           <div class="img_container">
@@ -18,29 +25,36 @@
           </div>
         </div>
 
-        <div class="dropdown_list_container" v-if="dropDownActive">
+        <div
+          class="dropdown_list_container"
+          id="dropdown_list_container"
+          v-if="dropDownActive"
+        >
           <div class="input_container">
             <img src="@/assets/icons/icon_search.png" alt="" /><input
               type="text"
               placeholder="Find"
               v-model.trim="searchTitle"
               ref="search"
+              @keyup.enter.prevent="goToDoc(filteredDropDownList)"
+              @keyup.up.prevent="highlightPrevious"
+              @keyup.down.prevent="highlightNext(filteredDropDownList.length)"
             />
           </div>
           <div
             class="dropdown_list_item"
-            v-for="item in filteredDropDownList"
+            v-for="(item, index) in filteredDropDownList"
             :key="item.id"
             @click="onDropdownListItemClick(item)"
-            @focus="method1"
-            @keyup.up="method1()"
-            @keyup.down="method2()"
+            @mouseover="highlightedIndex = index"
+            :tabindex="item.id"
+            @keyup.up="someMethod"
+            :class="{
+              selected_item: isCurrentIndex(index),
+            }"
           >
             <p>{{ item.id }}.</p>
-
-            <p ref="dropdown_list_item">
-              {{ item.firstName }} {{ item.lastName }}
-            </p>
+            <p>{{ item.firstName }} {{ item.lastName }}</p>
           </div>
         </div>
       </div>
@@ -60,6 +74,8 @@ export default {
       serverResponse: [],
 
       searchTitle: null,
+
+      highlightedIndex: -1,
     };
   },
   computed: {
@@ -79,11 +95,15 @@ export default {
   methods: {
     onDropDownClick() {
       this.dropDownActive = !this.dropDownActive;
-
+      // console.log(this.$refs.drop);
+      // if (this.dropDownActive) {
+      //   this.$nextTick(function () {
+      //     this.$refs.search.focus();
+      //     // console.log(this.$refs["search"]);
+      //     // this.$refs.dropdown.focus();
+      //   });
       this.$nextTick(function () {
-        // console.log(this.$refs["search"]);
-        this.$refs["search"].focus();
-        // this.$refs.dropdown_list_item.$el.focus();
+        this.$refs.search.focus();
       });
     },
 
@@ -96,11 +116,38 @@ export default {
       console.log("hided");
     },
 
-    method1() {
-      console.log(1);
+    highlightPrevious() {
+      if (this.highlightedIndex > 0) {
+        this.highlightedIndex -= 1;
+      }
     },
-    method2() {
-      console.log(2);
+
+    highlightNext(resultCount) {
+      if (this.highlightedIndex < resultCount - 1) {
+        this.highlightedIndex += 1;
+      }
+      this.fixScrolling();
+    },
+
+    isCurrentIndex(index) {
+      return index === this.highlightedIndex;
+    },
+
+    goToDoc(dropDownList) {
+      const fullTitle = `${dropDownList[this.highlightedIndex].firstName} ${
+        dropDownList[this.highlightedIndex].lastName
+      }`;
+      this.title = fullTitle;
+    },
+
+    fixScrolling() {
+      console.log("lol");
+      const element = document.getElementById("dropdown_list_container");
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "start",
+      });
     },
   },
 
@@ -110,6 +157,8 @@ export default {
     ).then((response) => response.json());
 
     this.dropDownList = this.serverResponse.users;
+    this.$nextTick(function () {});
+    this.$refs.drop.focus();
 
     // document.addEventListener("click", this.hideSelect.bind(this), true);
   },
@@ -184,9 +233,13 @@ export default {
         p {
           margin-right: 10px;
         }
-        &:hover {
-          background-color: #f6f8fd;
-        }
+        // &:hover {
+        //   background-color: #f6f8fd;
+        // }
+      }
+
+      .selected_item {
+        background-color: #f6f8fd;
       }
     }
   }
