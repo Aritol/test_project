@@ -28,5 +28,6 @@ export default {
 .main_container {
   display: flex;
   justify-content: center;
+  margin-top: 60px;
 }
 </style>
