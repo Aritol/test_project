@@ -1,16 +1,16 @@
 <template>
   <div class="main_container">
-    <drop-down-menu />
+    <form-load />
   </div>
 </template>
 
 <script>
-import DropDownMenu from "@/components/DropDownMenu";
+import FormLoad from "@/components/FormLoad";
 
 export default {
   name: "App",
   components: {
-    DropDownMenu,
+    FormLoad,
   },
 };
 </script>

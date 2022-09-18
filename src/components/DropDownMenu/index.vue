@@ -4,9 +4,7 @@
       <div class="main_wrapper">
         <div
           class="dropdown_header"
-          tabindex="0"
           @click="onDropDownClick"
-          ref="drop"
           @keyup.enter.prevent="goToDoc(filteredDropDownList)"
           @keyup.up.prevent="highlightPrevious"
           @keyup.down.prevent="highlightNext(filteredDropDownList.length)"
@@ -48,7 +46,6 @@
             :key="item.id"
             @click="onDropdownListItemClick(item)"
             @mouseover="highlightedIndex = index"
-            :tabindex="item.id"
             ref="options"
             @keyup.up="someMethod"
             :class="{
@@ -68,12 +65,20 @@
 export default {
   name: "DropDownMenu",
 
+  props: {
+    dropDownList: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+  },
+
   data() {
     return {
       title: "Select menu item",
       dropDownActive: false,
-      dropDownList: [],
-      serverResponse: [],
+      // dropDownList: [],
+      // serverResponse: [],
 
       searchTitle: null,
 
@@ -111,10 +116,6 @@ export default {
       this.title = `${item.firstName} ${item.lastName}`;
       this.dropDownActive = false;
     },
-    hideSelect() {
-      this.dropDownActive = false;
-      console.log("hided");
-    },
 
     highlightPrevious() {
       if (this.highlightedIndex > 0) {
@@ -144,14 +145,10 @@ export default {
         dropDownList[this.highlightedIndex].lastName
       }`;
       this.title = fullTitle;
+      this.dropDownActive = false;
     },
 
     fixScrolling() {
-      // console.log(this.$refs.options[this.arrowCounter].clientHeight);
-      // this.arrowCounter = this.highlightedIndex;
-      // if (condition) {
-
-      // }
       const liH = this.$refs.options[this.highlightedIndex].clientHeight;
       this.$refs.scrollContainer.scrollTop = liH * this.arrowCounter;
     },
@@ -165,20 +162,17 @@ export default {
   },
 
   async mounted() {
-    this.serverResponse = await fetch(
-      "https://dummyjson.com/users?&limit=50"
-    ).then((response) => response.json());
+    // this.serverResponse = await fetch(
+    //   "https://dummyjson.com/users?&limit=50"
+    // ).then((response) => response.json());
 
-    this.dropDownList = this.serverResponse.users;
-    // this.$nextTick(function () {});
-    // this.$refs.drop.focus();
+    // this.dropDownList = this.serverResponse.users;
     document.addEventListener("click", this.handleClickOutside);
-    // document.addEventListener("click", this.hideSelect.bind(this), true);
   },
 
-  beforeUnmount() {
-    // document.removeEventListener("click", this.hideSelect);
-  },
+  // beforeUnmount() {
+  //   // document.removeEventListener("click", this.hideSelect);
+  // },
   unmounted() {
     document.removeEventListener("click", this.handleClickOutside);
   },
@@ -243,7 +237,6 @@ export default {
       }
 
       .dropdown_list_item {
-        //   margin: 5px 10px;
         padding: 10px 10px;
         display: flex;
         p {
@@ -255,7 +248,6 @@ export default {
       }
 
       .selected_item {
-        // background-color: #f6f8fd;
         background-color: #4aae9b;
       }
     }
