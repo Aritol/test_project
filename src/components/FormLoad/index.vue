@@ -18,10 +18,14 @@ export default {
       serverResponse: [],
     };
   },
-  async mounted() {
-    this.serverResponse = await fetch(
-      "https://dummyjson.com/users?&limit=50"
-    ).then((response) => response.json());
+  async created() {
+    try {
+      this.serverResponse = await fetch(
+        "https://dummyjson.com/users?&limit=50"
+      ).then((response) => response.json());
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
 </script>
