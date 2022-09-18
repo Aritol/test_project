@@ -29,6 +29,7 @@
           class="dropdown_list_container"
           id="dropdown_list_container"
           v-if="dropDownActive"
+          ref="scrollContainer"
         >
           <div class="input_container">
             <img src="@/assets/icons/icon_search.png" alt="" /><input
@@ -48,6 +49,7 @@
             @click="onDropdownListItemClick(item)"
             @mouseover="highlightedIndex = index"
             :tabindex="item.id"
+            ref="options"
             @keyup.up="someMethod"
             :class="{
               selected_item: isCurrentIndex(index),
@@ -76,6 +78,8 @@ export default {
       searchTitle: null,
 
       highlightedIndex: -1,
+
+      arrowCounter: 0,
     };
   },
   computed: {
@@ -95,16 +99,12 @@ export default {
   methods: {
     onDropDownClick() {
       this.dropDownActive = !this.dropDownActive;
-      // console.log(this.$refs.drop);
-      // if (this.dropDownActive) {
-      //   this.$nextTick(function () {
-      //     this.$refs.search.focus();
-      //     // console.log(this.$refs["search"]);
-      //     // this.$refs.dropdown.focus();
-      //   });
-      this.$nextTick(function () {
-        this.$refs.search.focus();
-      });
+
+      if (this.dropDownActive) {
+        this.$nextTick(function () {
+          this.$refs.search.focus();
+        });
+      }
     },
 
     onDropdownListItemClick(item) {
@@ -119,14 +119,20 @@ export default {
     highlightPrevious() {
       if (this.highlightedIndex > 0) {
         this.highlightedIndex -= 1;
+        this.arrowCounter = this.arrowCounter - 1;
+        this.fixScrolling();
       }
     },
 
     highlightNext(resultCount) {
       if (this.highlightedIndex < resultCount - 1) {
         this.highlightedIndex += 1;
+        this.arrowCounter = this.arrowCounter + 1;
+        if (this.highlightedIndex > 8) {
+          this.fixScrolling();
+          // this.arrowCounter = 0;
+        }
       }
-      this.fixScrolling();
     },
 
     isCurrentIndex(index) {
@@ -141,13 +147,20 @@ export default {
     },
 
     fixScrolling() {
-      console.log("lol");
-      const element = document.getElementById("dropdown_list_container");
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "start",
-      });
+      // console.log(this.$refs.options[this.arrowCounter].clientHeight);
+      // this.arrowCounter = this.highlightedIndex;
+      // if (condition) {
+
+      // }
+      const liH = this.$refs.options[this.highlightedIndex].clientHeight;
+      this.$refs.scrollContainer.scrollTop = liH * this.arrowCounter;
+    },
+
+    handleClickOutside(evt) {
+      if (!this.$el.contains(evt.target)) {
+        this.dropDownActive = false;
+        this.arrowCounter = -1;
+      }
     },
   },
 
@@ -157,15 +170,18 @@ export default {
     ).then((response) => response.json());
 
     this.dropDownList = this.serverResponse.users;
-    this.$nextTick(function () {});
-    this.$refs.drop.focus();
-
+    // this.$nextTick(function () {});
+    // this.$refs.drop.focus();
+    document.addEventListener("click", this.handleClickOutside);
     // document.addEventListener("click", this.hideSelect.bind(this), true);
   },
 
-  // beforeUnmount() {
-  //   document.removeEventListener("click", this.hideSelect);
-  // },
+  beforeUnmount() {
+    // document.removeEventListener("click", this.hideSelect);
+  },
+  unmounted() {
+    document.removeEventListener("click", this.handleClickOutside);
+  },
 };
 </script>
 
@@ -174,9 +190,9 @@ export default {
   -webkit-user-select: none;
   font-size: 20px;
   border: 3px solid #dfe1f0;
-  width: 100%;
+  // width: 100%;
   //   height: 100%;
-  max-width: 400px;
+  width: 370px;
   //   max-height: 30px;
   .main_wrapper {
     cursor: pointer;
@@ -201,7 +217,7 @@ export default {
     .dropdown_list_container {
       border-top: 3px solid #dfe1f0;
       height: 100%;
-      max-height: 400px;
+      max-height: 450px;
       overflow: auto;
       .input_container {
         border-bottom: 3px solid #dfe1f0;
@@ -239,7 +255,8 @@ export default {
       }
 
       .selected_item {
-        background-color: #f6f8fd;
+        // background-color: #f6f8fd;
+        background-color: #4aae9b;
       }
     }
   }
